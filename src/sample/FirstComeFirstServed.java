@@ -22,7 +22,7 @@ public class FirstComeFirstServed extends Scheduler {
                 count = temp.getArrivaltime() + temp.getServicetime();
                 temp.setStartTime(temp.getArrivaltime());
                 temp.setEndtime(count);
-                temp.calculate(); // met deze methode ga je in het process zelf de waarden gaan uitrekenen
+                temp.calculate();
                 result.add(temp);
                 waittime += temp.getWaittime();
                 normtat += temp.getNormtat();
