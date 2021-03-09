@@ -27,7 +27,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         ProcessFactory p = new ProcessFactory();
-        Queue<Process> processen = p.leesProcessen("20000");
+        Queue<Process> processen1 = p.leesProcessen("20000");
         Queue<Process> processen2 = p.leesProcessen("10000");
         Queue<Process> processen3 = p.leesProcessen("50000");
 
