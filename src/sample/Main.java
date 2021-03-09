@@ -23,14 +23,16 @@ public class Main extends Application {
         launch(args);
     }
 
+
+    //HALLO
+
     @Override
     public void start(Stage stage) throws Exception {
 
         ProcessFactory p = new ProcessFactory();
-        Queue<Process> processen1 = p.leesProcessen("20000");
+        Queue<Process> processen = p.leesProcessen("20000");
         Queue<Process> processen2 = p.leesProcessen("10000");
         Queue<Process> processen3 = p.leesProcessen("50000");
-//fjfjfj
 
         stage.setTitle("Process scheduler");
         final NumberAxis xAxis = new NumberAxis();
