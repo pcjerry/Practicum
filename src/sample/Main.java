@@ -1,12 +1,6 @@
 package sample;
-import java.io.IOException;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
-
-import javafx.application.*;
+import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -16,6 +10,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Main extends Application {
 
@@ -30,7 +30,7 @@ public class Main extends Application {
         Queue<Process> processen1 = p.leesProcessen("20000");
         Queue<Process> processen2 = p.leesProcessen("10000");
         Queue<Process> processen3 = p.leesProcessen("50000");
-
+//fjfjfj
 
         stage.setTitle("Process scheduler");
         final NumberAxis xAxis = new NumberAxis();
