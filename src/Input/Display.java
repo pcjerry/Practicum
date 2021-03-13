@@ -1,4 +1,4 @@
-package SupportClasses;
+package Input;
 
 import Algorithms.*;
 import javafx.embed.swing.SwingFXUtils;
@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class Draw {
+public class Display {
 
-    private ProcessFactory p;
+    private ProcessInput input;
     private Queue<Process> processen;
 
-    public Draw() throws ParserConfigurationException, SAXException, IOException {
-        p = new ProcessFactory();
+    public Display() throws ParserConfigurationException, SAXException, IOException {
+        input = new ProcessInput();
     }
 
     public void TrTs(Stage stage, String aantal) throws ParserConfigurationException, SAXException, IOException {
@@ -36,7 +36,7 @@ public class Draw {
 
         String titel=sb.toString();
 
-        processen=p.leesProcessen(aantal);
+        processen=input.leesProcessen(aantal);
 
 
         stage.setTitle(titel);
@@ -136,7 +136,7 @@ public class Draw {
 
         String titel=sb.toString();
 
-        processen=p.leesProcessen(aantal);
+        processen=input.leesProcessen(aantal);
 
         stage.setTitle(titel);
 

@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import SupportClasses.Process;
+import Input.Process;
 
 public class HighestResponseRatioNext extends Scheduler {
 

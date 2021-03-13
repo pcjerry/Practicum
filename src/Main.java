@@ -1,23 +1,11 @@
 import Algorithms.*;
-import SupportClasses.Draw;
-import SupportClasses.Process;
-import SupportClasses.ProcessFactory;
+import Input.*;
 import javafx.application.Application;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 import org.xml.sax.SAXException;
 
-import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.IOException;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Scanner;
 
 import static javafx.application.Application.launch;
@@ -33,7 +21,7 @@ public class Main extends Application{
     @Override
     public void start(Stage stage) throws Exception {
 
-        Draw venster = new Draw();
+        Display venster = new Display();
 
         Scanner sc= new Scanner(System.in);
 

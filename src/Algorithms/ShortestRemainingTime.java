@@ -1,6 +1,6 @@
 package Algorithms;
 
-import SupportClasses.Process;
+import Input.Process;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -65,7 +65,7 @@ public class ShortestRemainingTime extends Scheduler {
                 //Parmeters instellen
                 temp.setStarttime(count);
 
-                //SupportClasses.Process op de processor zetten
+                //Input.Process op de processor zetten
                 currentProcess.add(temp);
 
             } else if (!currentProcess.isEmpty() && !waitingProcesses.isEmpty()){

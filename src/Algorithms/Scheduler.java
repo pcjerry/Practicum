@@ -2,7 +2,7 @@ package Algorithms;
 
 import java.util.PriorityQueue;
 import java.util.Queue;
-import SupportClasses.Process;
+import Input.Process;
 
 public abstract class Scheduler {
 

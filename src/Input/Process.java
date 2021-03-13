@@ -1,6 +1,6 @@
-package SupportClasses;
+package Input;
 
-public class Process extends ProcessFactory implements Cloneable, Comparable {
+public class Process extends ProcessInput implements Cloneable, Comparable {
 
 
     private int id;
@@ -64,7 +64,7 @@ public class Process extends ProcessFactory implements Cloneable, Comparable {
      */
     @Override
     public String toString() {
-        return "SupportClasses.Process{" +
+        return "Input.Process{" +
                 "id=" + id +
                 ", arrivaltime=" + arrivaltime +
                 ", servicetime=" + servicetime +

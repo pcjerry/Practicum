@@ -3,7 +3,7 @@ package Algorithms;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import SupportClasses.Process;
+import Input.Process;
 
 public class MultiLevelFeedback extends Scheduler {
 
@@ -118,19 +118,10 @@ public class MultiLevelFeedback extends Scheduler {
                         currentProcess.add(temp);
                     }
                 }
-
-
-
                 swap = false;
-
-
             }
-
-
-
             count++;
         }
-
 
         waittime = waittime / input.size();
         normtat = normtat / input.size();
@@ -142,7 +133,6 @@ public class MultiLevelFeedback extends Scheduler {
         sb.append(waittime + " " + normtat + " " + tat + " ");
 
         System.out.println(sb.toString());
-
 
         return finishedProcesses;
     }

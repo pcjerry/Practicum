@@ -3,18 +3,17 @@ package Algorithms;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import SupportClasses.Process;
+import Input.Process;
 
 public class FirstComeFirstServed extends Scheduler {
 
-    /**
-     * Method for executing the algorithm based on a single input que
-     * @param input Que containing the input processes
-     * @return A que of finished processes with processing information
-     * @throws NullPointerException
-     */
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> input) throws NullPointerException {
+
+        //Jerry Xiong 11/03/2021
+        //Manier voor uitvoeren van de algoritme op basis van een enkele input queue
+        //Input: alle input processen
+        //Output: een queue van processen met geprocesseerd gegevens
 
         Queue<Process> que = new LinkedList<>();
 
@@ -24,42 +23,42 @@ public class FirstComeFirstServed extends Scheduler {
 
         PriorityQueue<Process> finishedProcesses = new PriorityQueue<>();
 
-        //counter duidt op welk timeslot de processor zich bevindt
+        //Counter gaat hier aanduiden waar de processor zich bevindt (timeslot)
         int count = 0;
         int wait = 0;
         Process tmp;
 
-        //blijven lopen zolang er processen in de wachtrij staan.
+        //Voorwaarde: loop zolang de queue niet leeg is
         while (!que.isEmpty()) {
 
             tmp = que.poll();
 
             if (count < tmp.getArrivaltime()) {
 
-                //aanpassen counter naar timeslot na volgend process
+                //Counter aanpassen
                 count = tmp.getArrivaltime() + tmp.getServicetime();
 
-                //lokale parameters juist zetten
+                //Parameters opstellen
                 tmp.setStarttime(tmp.getArrivaltime());
                 tmp.setEndtime(count);
 
-                //lokale parameters worden in het proces uitgerekend
+                //Parameters niet uitrekenen (Lokaal)
                 tmp.calculate();
                 finishedProcesses.add(tmp);
 
             } else {
-                //counter, start en eind tijd instellen
+                //Definieren Counter, starttijd, stoptijd
                 tmp.setStarttime(count);
                 count += tmp.getServicetime();
                 tmp.setEndtime(count);
 
-                //lokale parameters berekenen
+                //Parameters berekenen (Lokaal)
                 tmp.calculate();
                 finishedProcesses.add(tmp);
 
             }
 
-            //globale parameters updaten
+            //Parameters aanpassen (Globaal)
             waittime += tmp.getWaittime();
             normtat += tmp.getNormtat();
             tat += tmp.getTat();
@@ -80,23 +79,22 @@ public class FirstComeFirstServed extends Scheduler {
         return finishedProcesses;
     }
 
-    /**
-     * Method for executing the algorithm based on a input que and a slice size.
-     * @param q The input que, contains all processes
-     * @param slice Has no use for the first come first serve algorithm
-     * @return que of finished processes with information on their processing
-     */
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> q, int slice) {
         return schedule(q);
     }
 
-    /**
-     * Method for retrcacting the general parameters
-     * @return A list of values (type double) containing the values of the general processor parameters
-     */
+    //Manier voor uitvoeren van de algoritme op basis van een enkele queue en een slice grootte
+    //Slice is niet gebruikt bij FCFS
+    //Input: alle processen
+    //Output: een queue van processen met geprocesseerd gegevens
+
     @Override
     public double[] getParameters() {
+
+        //Manier voor oproepen van globale parameters
+        //Output: gemiddelde wachttijd, gemiddelde genormaliseerde omlooptijd, gemiddelde omlooptijd
+
         double [] temp = new double[3];
         temp[0]= waittime;
         temp[1]= normtat;

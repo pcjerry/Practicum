@@ -1,6 +1,6 @@
 package Algorithms;
 
-import SupportClasses.Process;
+import Input.Process;
 
 import java.util.*;
 
