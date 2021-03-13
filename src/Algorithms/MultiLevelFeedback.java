@@ -7,66 +7,64 @@ import Input.Process;
 
 public class MultiLevelFeedback extends Scheduler {
 
-    /**
-     * Method for executing the algorithm based on a single input que
-     * Preferred method for MultiLevelFeedback
-     * @param input The input que, contains all processes
-     * @param slice The size of a schedueling slice -> the second que has a slice size multiplied by two.
-     * @return Que of finished processes with processing information
-     */
+    //Slice 1: x (1)
+    //Slice 2: x*2 (2)
+
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> input, int slice) {
         int slice1= slice;
         int slice2= slice1*2;
 
+        //13/03/2021
+        //Opstellen queue van input
         Queue<Process> inputQue = new LinkedList<>();
 
         for (Process p : input) {
             inputQue.add(new Process(p));
         }
 
-        //Verschillende que's aand de hand van waar het proces zich bevindt
+        //Opstellen van queue van processen afhankelijk van positie, 5 queues
         PriorityQueue<Process> waitingQue0 = new PriorityQueue<>();
         PriorityQueue<Process> waitingQue1 = new PriorityQueue<>();
         PriorityQueue<Process> waitingQue2 = new PriorityQueue<>();
+        PriorityQueue<Process> waitingQue3 = new PriorityQueue<>();
+        PriorityQueue<Process> waitingQue4 = new PriorityQueue<>();
+
+        //Opstellen van queue van output
         PriorityQueue<Process> finishedProcesses = new PriorityQueue<>();
         PriorityQueue<Process> currentProcess = new PriorityQueue<>();
 
         Process temp;
 
-        //counter duidt op welk timeslot de processor zich bevindt
+        //Counter gaat hier aanduiden waar de processor zich bevindt (timeslot)
         int count = 0;
         int currentSlice=0;
         int tempCounter=0;
         boolean swap=false;
 
-        //Loop blijft gaan tot alle processen afgerond zijn
+        //Voorwaarde: loop totdat alle processen afgerond zijn met processeren
         while(finishedProcesses.size()!=input.size()){
 
-            //Moest er al een process op de processor staan, service time verminderen.
+            //Bedieningstijd verminderen als er al een process is op de processor
             if(!currentProcess.isEmpty()){
                 currentProcess.peek().decreaseServicetime();
                 tempCounter++;
             }
 
-            //check of het process afgelopen is/of het process van de server moet
+            //Bekijken voor de proccessen die gedaan zijn met processeren + afhalen
             if(currentSlice==tempCounter)
                 swap=true;
             else if(!currentProcess.isEmpty()){
                 if(currentProcess.peek().getServicetime()==0)
                     swap=true;
-
             }
 
-            //check of er processen zijn die aan de wachtrij mogen worden toegevoegd
+            //Processen vinden die nog aan de queue kunnen toegevoegd worden
             while(inputQue.peek() != null && inputQue.peek().getArrivaltime()<=count)
                 waitingQue0.add(inputQue.poll());
 
-
-
-
             if(swap) {
-                //Als er een process in current zit
+                //Huidig process
                 if (!currentProcess.isEmpty()) {
                     temp = currentProcess.poll();
                     if (temp.getServicetime() == 0) {
@@ -76,11 +74,10 @@ public class MultiLevelFeedback extends Scheduler {
                         tempCounter = 0;
                         finishedProcesses.add(temp);
 
-                        //globale parameters updaten
-                        waittime += temp.getWaittime();
-                        normtat += temp.getNormtat();
+                        //Globale parameters aanpassen
                         tat += temp.getTat();
-
+                        normtat += temp.getNormtat();
+                        waittime += temp.getWaittime();
 
                     } else {
                         temp.increasePriority();
@@ -89,12 +86,11 @@ public class MultiLevelFeedback extends Scheduler {
                             waitingQue1.add(temp);
                          else if (tempPrior == 2)
                             waitingQue2.add(temp);
-
                     }
-
                 }
+
                 else{
-                    //Het juiste process processor tijd geven indien er geen actief process is
+                    //Tijd geven aan bepaalde process wanneer er geen actief process bezig is in queue
                     if (!waitingQue0.isEmpty()) {
                         temp = waitingQue0.poll();
                         temp.setStarttime(count);
@@ -102,6 +98,7 @@ public class MultiLevelFeedback extends Scheduler {
                         currentSlice = slice1;
                         tempCounter = 0;
                         currentProcess.add(temp);
+
                     } else if (!waitingQue1.isEmpty()) {
                         temp = waitingQue1.poll();
                         //temp.setStarttime(count);
@@ -109,8 +106,25 @@ public class MultiLevelFeedback extends Scheduler {
                         currentSlice = slice2;
                         tempCounter = 0;
                         currentProcess.add(temp);
+
                     } else if (!waitingQue2.isEmpty()) {
                         temp = waitingQue2.poll();
+                        //temp.setStarttime(count);
+                        temp.setPriority(2);
+                        currentSlice = -1;
+                        tempCounter = 0;
+                        currentProcess.add(temp);
+
+                    } else if (!waitingQue3.isEmpty()) {
+                        temp = waitingQue3.poll();
+                        //temp.setStarttime(count);
+                        temp.setPriority(2);
+                        currentSlice = -1;
+                        tempCounter = 0;
+                        currentProcess.add(temp);
+
+                    } else if (!waitingQue4.isEmpty()) {
+                        temp = waitingQue4.poll();
                         //temp.setStarttime(count);
                         temp.setPriority(2);
                         currentSlice = -1;
@@ -123,41 +137,31 @@ public class MultiLevelFeedback extends Scheduler {
             count++;
         }
 
-        waittime = waittime / input.size();
-        normtat = normtat / input.size();
         tat = tat / input.size();
+        normtat = normtat / input.size();
+        waittime = waittime / input.size();
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append("Glob parameters MLF ");
-        sb.append(waittime + " " + normtat + " " + tat + " ");
+        sb.append("Globale parameters MLF: ");
+        sb.append(tat + "---" + normtat + "---" + waittime + " ");
 
         System.out.println(sb.toString());
 
         return finishedProcesses;
     }
 
-    /**
-     * Method for executing the algorithm based on a single input que
-     * Used as a default in MultiLevelFeedback with slice size of 1.
-     * @param q The input que, contains all processes
-     * @return que of finished processes with information on their processing
-     */
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> q) {
         return schedule(q,1);
     }
 
-    /**
-     * Method for retrcacting the general parameters
-     * @return A list of values (type double) containing the values of the general processor parameters
-     */
     @Override
     public double[] getParameters() {
         double [] temp = new double[3];
-        temp[0]= waittime;
+        temp[0]= tat;
         temp[1]= normtat;
-        temp[2] = tat;
+        temp[2] = waittime;
         return temp;
     }
 }

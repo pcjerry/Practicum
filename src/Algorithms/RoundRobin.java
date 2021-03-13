@@ -6,124 +6,120 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class RoundRobin extends Scheduler {
+public class RoundRobin extends Scheduler{
 
-    /**
-     * Method for executing the algorithm based on a single input que
-     * Used as a default in RoundRobin with slice sice of 1.
-     * @param q The input que, contains all processes
-     * @return que of finished processes with information on their processing
-     */
+
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> q) {
-        return schedule(q,1);
+        return null;
     }
 
-    /**
-     * Method for executing the algorithm based on a single input que
-     * Preferred method for round robin
-     * @param input The input que, contains all processes
-     * @param slice The size of a schedueling slice
-     * @return Que of finished processes with processing information
-     */
+    //Manier voor uitvoeren van de algoritme op basis van een parameter
+    //Input: alle input processen
+    //Output: een queue van processen met geprocesseerd gegevens
+
     @Override
-    public PriorityQueue<Process> schedule(Queue<Process> input, int slice) {
+    public PriorityQueue<Process> schedule(Queue<Process> queue, int slice) {
+
+        //Manier voor uitvoeren van de algoritme op basis van twee parameters
+        //Input: alle input processen
+        //Output: een queue van processen met geprocesseerd gegevens
+        //Slice -> 2 4 8
+
+        int inputSize = queue.size();
 
         Queue<Process> que = new LinkedList<>();
 
-        for (Process p : input) {
+        for (Process p : queue) {
             que.add(new Process(p));
         }
 
-        //Verschillende que's aand de hand van waar het proces zich bevindt
+        PriorityQueue<Process> readyQue = new PriorityQueue<>();
+
         PriorityQueue<Process> finishedProcesses = new PriorityQueue<>();
-        PriorityQueue<Process> waitingProcesses = new PriorityQueue<>();
-        PriorityQueue<Process> currentProcess = new PriorityQueue<>();
-        Process temp;
+        Process currentScheduledProcess = null, tempProcess =null;
 
-        //counter duidt op welk timeslot de processor zich bevindt
-        int count = 0;
-        int tempCount = 0;
-        boolean swap = false;
-        boolean finished = false;
-        //Loop blijft gaan tot alle processen afgerond zijn
-        while(finishedProcesses.size()!=input.size()){
+        //Opstellen parameters
+        int counter = 0;
+        boolean processFinished = false;
+        boolean swap =true;
 
-            tempCount++;
-            boolean niewProcessOpServer = false;
-            swap= false;
+        while(finishedProcesses.size()!=inputSize){
 
-            //bekijk of er een swap nodig is
-            if(!currentProcess.isEmpty()){
-                temp=currentProcess.peek();
-                temp.decreaseServicetime();
-                if(temp.getServicetime()==0){
-                    swap=true;
-                    finished=true;
+            //Toevoegen van processen die aangekomen zijn bij de queue
+            while(!que.isEmpty() && que.peek().getArrivaltime()<=counter ){
+                readyQue.add(que.poll());
+            }
+
+            //Voorwaarden voor het wisselen
+            if (currentScheduledProcess!=null){
+                currentScheduledProcess.decreaseServicetime();
+                if(currentScheduledProcess.getServicetime()==0){
+                    processFinished = true;
+                    swap= true;
                 }
-            }else{
-                swap=true;
-                niewProcessOpServer=true;
+            }
+            if(counter%slice==0){
+                swap = true;
             }
 
-            if(tempCount==slice){
-                swap=true;
-            }
+            //Processor opruimen
+            if(swap && currentScheduledProcess!=null){
+                tempProcess=currentScheduledProcess;
+                currentScheduledProcess=null;
+                if(processFinished){
+                    tempProcess.setEndtime(counter);
+                    tempProcess.calculate();
 
-            //check of er processen zijn die aan de wachtrij mogen worden toegevoegd
-            while(que.peek() != null && que.peek().getArrivaltime()<=count)
-                waitingProcesses.add(que.poll());
+                    finishedProcesses.add(tempProcess);
 
-
-            //haal process van de processor
-            if(swap && !currentProcess.isEmpty()){
-                temp=currentProcess.poll();
-                if(finished){
-                    temp.setEndtime(count);
-                    temp.calculate();
-
-                    finishedProcesses.add(temp);
-
-                    //globale parameters updaten
-                    waittime += temp.getWaittime();
-                    normtat += temp.getNormtat();
-                    tat += temp.getTat();
-                    finished=false;
+                    //Globale parameters aanpassen
+                    waittime += tempProcess.getWaittime();
+                    normtat += tempProcess.getNormtat();
+                    tat += tempProcess.getTat();
+                    processFinished=false;
                 }else {
-                    waitingProcesses.add(temp);
+                    readyQue.add(tempProcess);
                 }
-                niewProcessOpServer=true;
-
+                tempProcess = null;
             }
 
-            //nieuw process op de processor plaatsen
-            if(swap && niewProcessOpServer &&!waitingProcesses.isEmpty()){
-                tempCount=0;
-                temp=waitingProcesses.poll();
-
-                if (temp.getStarttime()==0){
-                    temp.setStarttime(count);
+            //Plaatsen process op de processor + counter aanpassen
+            if(swap && currentScheduledProcess==null){
+                if(!readyQue.isEmpty()){
+                    tempProcess=readyQue.poll();
+                    if(tempProcess.getStarttime()==-1){
+                        tempProcess.setStarttime(counter);
+                    }
+                    currentScheduledProcess=tempProcess;
+                }else if(!que.isEmpty()){
+                    tempProcess=que.poll();
+                    counter=tempProcess.getArrivaltime();
+                    tempProcess.setStarttime(counter);
+                    currentScheduledProcess=tempProcess;
                 }
-                currentProcess.add(temp);
-
+                tempProcess=null;
+                swap=false;
             }
-
-            count++;
+            counter++;
         }
+
+        tat = tat / queue.size();
+        normtat = normtat / queue.size();
+        waittime = waittime / queue.size();
+
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("Globale parameters RR: " + slice + " - ");
+        sb.append(tat + "---" + normtat + "---" + waittime + " ");
+
+        System.out.println(sb.toString());
 
         return finishedProcesses;
     }
 
-    /**
-     * Method for retrcacting the general parameters
-     * @return A list of values (type double) containing the values of the general processor parameters
-     */
     @Override
     public double[] getParameters() {
-        double [] temp = new double[3];
-        temp[0]= waittime;
-        temp[1]= normtat;
-        temp[2] = tat;
-        return temp;
+        return new double[0];
     }
 }

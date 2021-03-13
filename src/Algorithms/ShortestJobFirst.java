@@ -14,86 +14,75 @@ public class ShortestJobFirst extends Scheduler {
             que.add(new Process(p));
         }
 
-
-        //Verschillende que's aand de hand van waar het proces zich bevindt
+        //Opstellen van queue van processen afhankelijk van positie
         PriorityQueue<Process> finishedProcesses = new PriorityQueue<>();
         PriorityQueue<Process> waitingProcesses = new PriorityQueue<Process>(10,(a, b)->a.getServicetime()-b.getServicetime());
 
         Process temp;
 
-        //counter duidt op welk timeslot de processor zich bevindt
+        //Counter gaat hier aanduiden waar de processor zich bevindt (timeslot)
         int count = 0;
 
-        //Loop blijft gaan tot alle processen afgerond zijn
+        //Voorwaarde: loop totdat alle processen afgerond zijn met processeren
         while(finishedProcesses.size()!=input.size()){
 
-            //check of er processen zijn die aan de wachtrij mogen worden toegevoegd
+            //Processen vinden die nog aan de queue kunnen toegevoegd worden
             while(que.peek() != null && que.peek().getArrivaltime()<=count)
                 waitingProcesses.add(que.poll());
 
-            //process uitvoeren als er één klaar is om uitgevoerd te worden, vervolgens de count aanpassen
+            //Uitvoeren van process wanneer er 1 gereed is om uit te voeren + count aanpassen
             if (!waitingProcesses.isEmpty()) {
+
                 //Uit te voeren process uit de wachtrij halen
                 temp=waitingProcesses.poll();
 
-                //Parmeters instellen
+                //Parameters opstellen
                 temp.setStarttime(count);
                 count += temp.getServicetime();
                 temp.setEndtime(count);
 
-                //lokale parameters berekenen
+                //Parameters berekenen (Lokaal)
                 temp.calculate();
 
-                //process toevoegen aan de finished lijst
+                //Geprocesseerd processen aan de FinishedQueue toevoegen
                 finishedProcesses.add(temp);
 
-                //globale parameters updaten
-                waittime += temp.getWaittime();
-                normtat += temp.getNormtat();
+                //Parameters aanpassen (Globaal)
                 tat += temp.getTat();
+                normtat += temp.getNormtat();
+                waittime += temp.getWaittime();
+
             }else {
                 count++;
             }
 
         }
 
-        waittime = waittime / input.size();
-        normtat = normtat / input.size();
         tat = tat / input.size();
+        normtat = normtat / input.size();
+        waittime = waittime / input.size();
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append("Glob parameters SJF ");
-        sb.append(waittime + " " + normtat + " " + tat + " ");
+        sb.append("Globale parameters SJF: ");
+        sb.append(tat + "---" + normtat + "---" + waittime + " ");
 
         System.out.println(sb.toString());
 
         return finishedProcesses;
     }
 
-
-    /**
-     * Method for executing the algorithm based on a single input que
-     * Not the preferred method for ShortestJobFirst.
-     * @param q The input que, contains all processes
-     * @param slice The size of a schedueling slice -> no use in ShortestJobFirst.
-     * @return Que of finished processes with processing information
-     */
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> q, int slice) {
         return schedule(q);
     }
 
-    /**
-     * Method for retrcacting the general parameters
-     * @return A list of values (type double) containing the values of the general processor parameters
-     */
     @Override
     public double[] getParameters() {
         double [] temp = new double[3];
-        temp[0]= waittime;
+        temp[0]= tat;
         temp[1]= normtat;
-        temp[2] = tat;
+        temp[2] = waittime;
         return temp;
     }
 }

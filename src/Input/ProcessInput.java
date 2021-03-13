@@ -1,5 +1,5 @@
 package Input;
-
+import Input.Process;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -8,7 +8,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import Input.Process;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -17,16 +16,16 @@ import org.xml.sax.SAXException;
 
 public class ProcessInput {
 
-    public Queue<Process> leesProcessen(String s) throws SAXException, IOException, ParserConfigurationException {
+    public Queue<Process> uitlezenProcessen(String s) throws SAXException, IOException, ParserConfigurationException {
 
         Queue<Process> processen = new LinkedList<>();
 
         File file = null;
-        if (s.equals("10.000")) {
+        if (s.equals("10000")) {
             file = new File("processen10000.xml");
-        } else if (s.equals("20.000")) {
+        } else if (s.equals("20000")) {
             file = new File("processen20000.xml");
-        } else if (s.equals("50.000")){
+        } else if (s.equals("50000")){
             file = new File("processen50000.xml");
         }
 

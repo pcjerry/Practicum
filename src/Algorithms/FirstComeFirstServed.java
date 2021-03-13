@@ -7,20 +7,24 @@ import Input.Process;
 
 public class FirstComeFirstServed extends Scheduler {
 
+        //Jerry Xiong 11/03/2021
+
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> input) throws NullPointerException {
 
-        //Jerry Xiong 11/03/2021
         //Manier voor uitvoeren van de algoritme op basis van een enkele input queue
         //Input: alle input processen
         //Output: een queue van processen met geprocesseerd gegevens
+        //Zelfde geval voor andere algoritmes: FCFS, HRRN, SJF, SRT, MLF
 
+        //Opstellen queue van input
         Queue<Process> que = new LinkedList<>();
 
         for (Process p : input) {
             que.add(new Process(p));
         }
 
+        //Opstellen queue van output
         PriorityQueue<Process> finishedProcesses = new PriorityQueue<>();
 
         //Counter gaat hier aanduiden waar de processor zich bevindt (timeslot)
@@ -31,6 +35,7 @@ public class FirstComeFirstServed extends Scheduler {
         //Voorwaarde: loop zolang de queue niet leeg is
         while (!que.isEmpty()) {
 
+            //Process uithalen
             tmp = que.poll();
 
             if (count < tmp.getArrivaltime()) {
@@ -59,20 +64,20 @@ public class FirstComeFirstServed extends Scheduler {
             }
 
             //Parameters aanpassen (Globaal)
-            waittime += tmp.getWaittime();
-            normtat += tmp.getNormtat();
-            tat += tmp.getTat();
 
+            tat += tmp.getTat();
+            normtat += tmp.getNormtat();
+            waittime += tmp.getWaittime();
         }
 
-        waittime = waittime / input.size();
-        normtat = normtat / input.size();
         tat = tat / input.size();
+        normtat = normtat / input.size();
+        waittime = waittime / input.size();
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append("Glob parameters FCFS ");
-        sb.append(waittime + " " + normtat + " " + tat + " ");
+        sb.append("Globale parameters FCFS: ");
+        sb.append(tat + "---" + normtat + "---" + waittime + " ");
 
         System.out.println(sb.toString());
 
@@ -81,13 +86,15 @@ public class FirstComeFirstServed extends Scheduler {
 
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> q, int slice) {
+
+        //Manier voor uitvoeren van de algoritme op basis van een enkele queue en een slice grootte
+        //Slice is niet gebruikt bij FCFS, HRRN, SJF, SRT
+        //Input: alle processen
+        //Output: een queue van processen met geprocesseerd gegevens
+        //Zelfde geval voor andere algoritmes: FCFS, HRRN, RR, SJF, SRT, MLF
+
         return schedule(q);
     }
-
-    //Manier voor uitvoeren van de algoritme op basis van een enkele queue en een slice grootte
-    //Slice is niet gebruikt bij FCFS
-    //Input: alle processen
-    //Output: een queue van processen met geprocesseerd gegevens
 
     @Override
     public double[] getParameters() {
@@ -96,11 +103,9 @@ public class FirstComeFirstServed extends Scheduler {
         //Output: gemiddelde wachttijd, gemiddelde genormaliseerde omlooptijd, gemiddelde omlooptijd
 
         double [] temp = new double[3];
-        temp[0]= waittime;
+        temp[0]= tat;
         temp[1]= normtat;
-        temp[2] = tat;
+        temp[2] = waittime;
         return temp;
     }
-    
-    
 }

@@ -28,6 +28,7 @@ public class Display {
 
     public void TrTs(Stage stage, String aantal) throws ParserConfigurationException, SAXException, IOException {
 
+        //TODO
 
         StringBuilder sb = new StringBuilder();
         sb.append("Genormaliseerde Omplooptijd bij ");
@@ -36,7 +37,7 @@ public class Display {
 
         String titel=sb.toString();
 
-        processen=input.leesProcessen(aantal);
+        processen=input.uitlezenProcessen(aantal);
 
 
         stage.setTitle(titel);
@@ -85,10 +86,10 @@ public class Display {
         Scheduler srt = new ShortestRemainingTime();
         PriorityQueue<Process> srtQue = srt.schedule(processen);
 
-        Scheduler rr2 = new RoundRobinV2();
+        Scheduler rr2 = new RoundRobin();
         PriorityQueue<Process> rr2Que = rr2.schedule(processen,2);
 
-        Scheduler rr8 = new RoundRobinV2();
+        Scheduler rr8 = new RoundRobin();
         PriorityQueue<Process> rr8Que = rr8.schedule(processen,8);
 
         Scheduler hrrn = new HighestResponseRatioNext();
@@ -136,7 +137,7 @@ public class Display {
 
         String titel=sb.toString();
 
-        processen=input.leesProcessen(aantal);
+        processen=input.uitlezenProcessen(aantal);
 
         stage.setTitle(titel);
 
@@ -166,9 +167,13 @@ public class Display {
         XYChart.Series seriesSRT = new XYChart.Series();
         seriesSRT.setName("SRT");
         XYChart.Series seriesRR = new XYChart.Series();
-        seriesRR.setName("RR q=2");
+        seriesRR.setName("RR q= 2");
+
+        //XYChart.Series seriesRR1 = new XYChart.Series();
+        //seriesRR1.setName("RR q= 4");
+
         XYChart.Series seriesRR2 = new XYChart.Series();
-        seriesRR2.setName("RR q=8");
+        seriesRR2.setName("RR q= 8");
         XYChart.Series seriesHRRN = new XYChart.Series();
         seriesHRRN.setName("HRRN");
         XYChart.Series seriesMLF = new XYChart.Series();
@@ -185,10 +190,10 @@ public class Display {
         Scheduler srt = new ShortestRemainingTime();
         PriorityQueue<Process> srtQue = srt.schedule(processen);
 
-        Scheduler rr2 = new RoundRobinV2();
+        Scheduler rr2 = new RoundRobin();
         PriorityQueue<Process> rr2Que = rr2.schedule(processen,2);
 
-        Scheduler rr8 = new RoundRobinV2();
+        Scheduler rr8 = new RoundRobin();
         PriorityQueue<Process> rr8Que = rr8.schedule(processen,8);
 
         Scheduler hrrn = new HighestResponseRatioNext();
@@ -216,13 +221,6 @@ public class Display {
         lineChart.getData().add(seriesMLF);
         Scene scene  = new Scene(lineChart,800,600);
 
-        StringBuffer sb2= new StringBuffer();
-
-        sb2.append("/Users/WouterLegiest/Downloads/ChartPracticeOne/chart_Wait_" + aantal + ".png");
-
-        //saveAsPng(scene, sb2.toString());
-
-        //saveAsPng(scene, "//OnsFavorieteVak_Labo1/res/chart_Wait_10.png");
         stage.setScene(scene);
     }
 
