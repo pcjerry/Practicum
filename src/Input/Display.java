@@ -51,18 +51,19 @@ public class Display {
         //X-Y-assen waarden
         xAxis.setAutoRanging(false);
         xAxis.setLowerBound(0);
-        xAxis.setUpperBound(400);
-        xAxis.setTickUnit(40);
+        xAxis.setUpperBound(100);
+        xAxis.setTickUnit(10);
 
         yAxis.setAutoRanging(false);
         yAxis.setLowerBound(0);
-        yAxis.setUpperBound(30);
-        yAxis.setTickUnit(3);
+        yAxis.setUpperBound(40);
+        yAxis.setTickUnit(4);
 
         //Chart
         final LineChart<Number,Number> lineChart = new LineChart<Number,Number>(xAxis,yAxis);
         lineChart.setTitle(titel);
         lineChart.setCreateSymbols(false);
+
 
         //Verschillende algoritmen aan chart toevoegen
         XYChart.Series reeksFCFS= new XYChart.Series();
@@ -140,6 +141,7 @@ public class Display {
         //Resolutie scherm
         Scene scene  = new Scene(lineChart,1280,720);
         stage.setScene(scene);
+        scene.getStylesheets().add("style.css");
     }
 
 
@@ -167,8 +169,8 @@ public class Display {
         //X-Y-assen waarden
         xAxis.setAutoRanging(false);
         xAxis.setLowerBound(0);
-        xAxis.setUpperBound(300);
-        xAxis.setTickUnit(30);
+        xAxis.setUpperBound(200);
+        xAxis.setTickUnit(20);
 
         yAxis.setAutoRanging(false);
         yAxis.setLowerBound(0);
@@ -257,6 +259,7 @@ public class Display {
         //Resolutie scherm
         Scene scene  = new Scene(lineChart,1280,720);
         stage.setScene(scene);
+        scene.getStylesheets().add("style.css");
     }
 
 
