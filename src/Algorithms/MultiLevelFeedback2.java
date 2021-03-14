@@ -5,17 +5,16 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import Input.Process;
 
-public class MultiLevelFeedback extends Scheduler {
+public class MultiLevelFeedback2 extends Scheduler {
 
     //Slice 1: x (1) Constant
-    //Slice 2: x*2 (2) Lineair
+    //Slice 2: x^2 (2) Exponentieel
 
     @Override
     public PriorityQueue<Process> schedule(Queue<Process> input, int slice) {
         int slice1= slice;
-        int slice2= slice1*2;
+        int slice2= (int) Math.pow(slice1, 2);
 
-        //13/03/2021
         //Opstellen queue van input
         Queue<Process> inputQue = new LinkedList<>();
 
@@ -84,7 +83,7 @@ public class MultiLevelFeedback extends Scheduler {
                         int tempPrior = temp.getPriority();
                         if (tempPrior == 1)
                             waitingQue1.add(temp);
-                         else if (tempPrior == 2)
+                        else if (tempPrior == 2)
                             waitingQue2.add(temp);
                     }
                 }
@@ -139,7 +138,7 @@ public class MultiLevelFeedback extends Scheduler {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append("Globale parameters MLF.L: ");
+        sb.append("Globale parameters MLF.E: ");
         sb.append(tat + "---" + normtat + "---" + waittime + " ");
 
         System.out.println(sb.toString());

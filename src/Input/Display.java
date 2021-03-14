@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.Line;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
@@ -26,263 +27,288 @@ public class Display {
         input = new ProcessInput();
     }
 
-    public void TrTs(Stage stage, String aantal) throws ParserConfigurationException, SAXException, IOException {
+    //NORMDISPLAY########################################################################
 
-        //TODO
+    public void norm(Stage stage, String aantal) throws ParserConfigurationException, SAXException, IOException {
 
+        //Grafiek Titel
         StringBuilder sb = new StringBuilder();
-        sb.append("Genormaliseerde Omplooptijd bij ");
+        sb.append("Genormaliseerde Omlooptijd in functie van ");
         sb.append(aantal);
         sb.append(" processen");
-
-        String titel=sb.toString();
-
+        String titel= sb.toString();
         processen=input.uitlezenProcessen(aantal);
-
-
         stage.setTitle(titel);
 
-        //defining the axes
+
+        //Grafiek X-Y-assen
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("bedieningstijd Ts");
-        yAxis.setLabel("Genormaliseerde omlooptijd Ts/Tr ");
+        xAxis.setLabel("Bedieningstijd");
+        yAxis.setLabel("Genormaliseerde Omlooptijd ");
+
+
+        //X-Y-assen waarden
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(400);
+        xAxis.setTickUnit(40);
+
         yAxis.setAutoRanging(false);
         yAxis.setLowerBound(0);
-        yAxis.setUpperBound(20);
-        yAxis.setTickUnit(2);
+        yAxis.setUpperBound(30);
+        yAxis.setTickUnit(3);
 
-        //creating the chart
-        final LineChart<Number,Number> lineChart =
-                new LineChart<Number,Number>(xAxis,yAxis);
-
+        //Chart
+        final LineChart<Number,Number> lineChart = new LineChart<Number,Number>(xAxis,yAxis);
         lineChart.setTitle(titel);
         lineChart.setCreateSymbols(false);
 
-        //defining a series
-        XYChart.Series seriesFCFS= new XYChart.Series();
-        seriesFCFS.setName("FCFS");
-        XYChart.Series seriesSJF = new XYChart.Series();
-        seriesSJF.setName("SJF");
-        XYChart.Series seriesSRT = new XYChart.Series();
-        seriesSRT.setName("SRT");
-        XYChart.Series seriesRR = new XYChart.Series();
-        seriesRR.setName("RR q=2");
-        XYChart.Series seriesRR2 = new XYChart.Series();
-        seriesRR2.setName("RR q=8");
-        XYChart.Series seriesHRRN = new XYChart.Series();
-        seriesHRRN.setName("HRRN");
-        XYChart.Series seriesMLF = new XYChart.Series();
-        seriesMLF.setName("MLF");
+        //Verschillende algoritmen aan chart toevoegen
+        XYChart.Series reeksFCFS= new XYChart.Series();
+        reeksFCFS.setName("FCFS");
+        XYChart.Series reeksSJF = new XYChart.Series();
+        reeksSJF.setName("SJF");
+        XYChart.Series reeksSRT = new XYChart.Series();
+        reeksSRT.setName("SRT");
+        XYChart.Series reeksRR = new XYChart.Series();
+        reeksRR.setName("RR q= 2");
+        XYChart.Series reeksRR1 = new XYChart.Series();
+        reeksRR1.setName("RR q= 4");
+        XYChart.Series reeksRR2 = new XYChart.Series();
+        reeksRR2.setName("RR q=8");
+        XYChart.Series reeksHRRN = new XYChart.Series();
+        reeksHRRN.setName("HRRN");
+        XYChart.Series reeksMLF = new XYChart.Series();
+        reeksMLF.setName("MLF.L");
+        XYChart.Series reeksMLF2 = new XYChart.Series();
+        reeksMLF2.setName("MLF.E");
 
-        ////////////////////////////VULLEN SERIES///////////////////////////////////
+        //########################################################################
 
+        //Queues invullen aan de series
         Scheduler fcfs = new FirstComeFirstServed();
-        PriorityQueue<Process> fcfsQue = fcfs.schedule(processen);
+        PriorityQueue<Process> fcfsQueue = fcfs.schedule(processen);
 
         Scheduler sjf = new ShortestJobFirst();
-        PriorityQueue<Process> sjfQue = sjf.schedule(processen);
+        PriorityQueue<Process> sjfQueue = sjf.schedule(processen);
 
         Scheduler srt = new ShortestRemainingTime();
-        PriorityQueue<Process> srtQue = srt.schedule(processen);
+        PriorityQueue<Process> srtQueue = srt.schedule(processen);
 
         Scheduler rr2 = new RoundRobin();
-        PriorityQueue<Process> rr2Que = rr2.schedule(processen,2);
+        PriorityQueue<Process> rr2Queue = rr2.schedule(processen,2);
+
+        Scheduler rr4 = new RoundRobin();
+        PriorityQueue<Process> rr4Queue = rr4.schedule(processen, 4);
 
         Scheduler rr8 = new RoundRobin();
-        PriorityQueue<Process> rr8Que = rr8.schedule(processen,8);
+        PriorityQueue<Process> rr8Queue = rr8.schedule(processen,8);
 
         Scheduler hrrn = new HighestResponseRatioNext();
-        PriorityQueue<Process> hrrnQue = hrrn.schedule(processen);
+        PriorityQueue<Process> hrrnQueue = hrrn.schedule(processen);
 
         Scheduler mlf = new MultiLevelFeedback();
-        PriorityQueue<Process> mlfQue = mlf.schedule(processen);
+        PriorityQueue<Process> mlfQueue = mlf.schedule(processen);
 
-        vulSeriesNorm(fcfsQue,seriesFCFS);
-        vulSeriesNorm(sjfQue,seriesSJF);
-        vulSeriesNorm(srtQue,seriesSRT);
-        vulSeriesNorm(rr2Que,seriesRR);
-        vulSeriesNorm(rr8Que,seriesRR2);
-        vulSeriesNorm(hrrnQue,seriesHRRN);
-        vulSeriesNorm(mlfQue,seriesMLF);
+        Scheduler mlf2 = new MultiLevelFeedback2();
+        PriorityQueue<Process> mlfQueue2 = mlf2.schedule(processen);
 
-        /////////////////////////////////////////////////////////////////////////////
+        reeksNorm(fcfsQueue, reeksFCFS);
+        reeksNorm(sjfQueue, reeksSJF);
+        reeksNorm(srtQueue, reeksSRT);
+        reeksNorm(rr2Queue, reeksRR);
+        reeksNorm(rr4Queue, reeksRR1);
+        reeksNorm(rr8Queue, reeksRR2);
+        reeksNorm(hrrnQueue, reeksHRRN);
+        reeksNorm(mlfQueue, reeksMLF);
+        reeksNorm(mlfQueue2, reeksMLF2);
 
-        lineChart.getData().add(seriesFCFS);
-        lineChart.getData().add(seriesSJF);
-        lineChart.getData().add(seriesSRT);
-        lineChart.getData().add(seriesRR);
-        lineChart.getData().add(seriesRR2);
-        lineChart.getData().add(seriesHRRN);
-        lineChart.getData().add(seriesMLF);
+        //########################################################################
 
-        Scene scene  = new Scene(lineChart,800,600);
+        //Toevoegen aan Chart met de reeks
+        lineChart.getData().add(reeksFCFS);
+        lineChart.getData().add(reeksSJF);
+        lineChart.getData().add(reeksSRT);
+        lineChart.getData().add(reeksRR);
+        lineChart.getData().add(reeksRR1);
+        lineChart.getData().add(reeksRR2);
+        lineChart.getData().add(reeksHRRN);
+        lineChart.getData().add(reeksMLF);
+        lineChart.getData().add(reeksMLF2);
 
-        StringBuffer sb2= new StringBuffer();
-
-        sb2.append("/Users/WouterLegiest/Downloads/ChartPracticeOne/chart_Norm_" + aantal + ".png");
-
-        //saveAsPng(scene, sb2.toString());
-        //"/Users/WouterLegiest/Downloads/ChartPracticeOne/chart_Wait_10.png"
+        //Resolutie scherm
+        Scene scene  = new Scene(lineChart,1280,720);
         stage.setScene(scene);
     }
+
+
+    //WAITDISPLAY########################################################################
 
     public void wait(Stage stage, String aantal) throws ParserConfigurationException, SAXException, IOException {
 
-
+        //Grafiek titel
         StringBuilder sb = new StringBuilder();
-        sb.append("Wachttijd bij ");
+        sb.append("Wachttijd in functie van ");
         sb.append(aantal);
         sb.append(" processen");
-
         String titel=sb.toString();
-
         processen=input.uitlezenProcessen(aantal);
-
         stage.setTitle(titel);
 
-        //defining the axes
+
+        //Grafiek X-Y-assen
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("bedieningstijd Ts");
-        yAxis.setLabel("Wachttijd Tw ");
+        xAxis.setLabel("Bedieningstijd");
+        yAxis.setLabel("Wachttijd ");
+
+
+        //X-Y-assen waarden
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(300);
+        xAxis.setTickUnit(30);
 
         yAxis.setAutoRanging(false);
         yAxis.setLowerBound(0);
-        yAxis.setUpperBound(1100);
+        yAxis.setUpperBound(1000);
         yAxis.setTickUnit(100);
 
         //creating the chart
-        final LineChart<Number,Number> lineChart =
-                new LineChart<Number,Number>(xAxis,yAxis);
-
+        final LineChart<Number,Number> lineChart = new LineChart<Number,Number>(xAxis,yAxis);
         lineChart.setTitle(titel);
         lineChart.setCreateSymbols(false);
 
-        //defining a series
-        XYChart.Series seriesFCFS= new XYChart.Series();
-        seriesFCFS.setName("FCFS");
-        XYChart.Series seriesSJF = new XYChart.Series();
-        seriesSJF.setName("SJF");
-        XYChart.Series seriesSRT = new XYChart.Series();
-        seriesSRT.setName("SRT");
-        XYChart.Series seriesRR = new XYChart.Series();
-        seriesRR.setName("RR q= 2");
+        //Verschillende algoritmen aan chart toevoegen
+        XYChart.Series reeksFCFS= new XYChart.Series();
+        reeksFCFS.setName("FCFS");
+        XYChart.Series reeksSJF = new XYChart.Series();
+        reeksSJF.setName("SJF");
+        XYChart.Series reeksSRT = new XYChart.Series();
+        reeksSRT.setName("SRT");
+        XYChart.Series reeksRR = new XYChart.Series();
+        reeksRR.setName("RR q= 2");
+        XYChart.Series reeksRR1 = new XYChart.Series();
+        reeksRR1.setName("RR q= 4");
+        XYChart.Series reeksRR2 = new XYChart.Series();
+        reeksRR2.setName("RR q=8");
+        XYChart.Series reeksHRRN = new XYChart.Series();
+        reeksHRRN.setName("HRRN");
+        XYChart.Series reeksMLF = new XYChart.Series();
+        reeksMLF.setName("MLF.L");
+        XYChart.Series reeksMLF2 = new XYChart.Series();
+        reeksMLF2.setName("MLF.E");
 
-        //XYChart.Series seriesRR1 = new XYChart.Series();
-        //seriesRR1.setName("RR q= 4");
 
-        XYChart.Series seriesRR2 = new XYChart.Series();
-        seriesRR2.setName("RR q= 8");
-        XYChart.Series seriesHRRN = new XYChart.Series();
-        seriesHRRN.setName("HRRN");
-        XYChart.Series seriesMLF = new XYChart.Series();
-        seriesMLF.setName("MLF");
+        //########################################################################
 
-        ////////////////////////////VULLEN SERIES///////////////////////////////////
-
+        //Queues invullen aan de series
         Scheduler fcfs = new FirstComeFirstServed();
-        PriorityQueue<Process> fcfsQue = fcfs.schedule(processen);
+        PriorityQueue<Process> fcfsQueue = fcfs.schedule(processen);
 
         Scheduler sjf = new ShortestJobFirst();
-        PriorityQueue<Process> sjfQue = sjf.schedule(processen);
+        PriorityQueue<Process> sjfQueue = sjf.schedule(processen);
 
         Scheduler srt = new ShortestRemainingTime();
-        PriorityQueue<Process> srtQue = srt.schedule(processen);
+        PriorityQueue<Process> srtQueue = srt.schedule(processen);
 
         Scheduler rr2 = new RoundRobin();
-        PriorityQueue<Process> rr2Que = rr2.schedule(processen,2);
+        PriorityQueue<Process> rr2Queue = rr2.schedule(processen,2);
+
+        Scheduler rr4 = new RoundRobin();
+        PriorityQueue<Process> rr4Queue = rr4.schedule(processen, 4);
 
         Scheduler rr8 = new RoundRobin();
-        PriorityQueue<Process> rr8Que = rr8.schedule(processen,8);
+        PriorityQueue<Process> rr8Queue = rr8.schedule(processen,8);
 
         Scheduler hrrn = new HighestResponseRatioNext();
-        PriorityQueue<Process> hrrnQue = hrrn.schedule(processen);
+        PriorityQueue<Process> hrrnQueue = hrrn.schedule(processen);
 
         Scheduler mlf = new MultiLevelFeedback();
-        PriorityQueue<Process> mlfQue = mlf.schedule(processen,2);
+        PriorityQueue<Process> mlfQueue = mlf.schedule(processen);
 
-        vulSeriesWait(fcfsQue,seriesFCFS);
-        vulSeriesWait(sjfQue,seriesSJF);
-        vulSeriesWait(srtQue,seriesSRT);
-        vulSeriesWait(rr2Que,seriesRR);
-        vulSeriesWait(rr8Que,seriesRR2);
-        vulSeriesWait(hrrnQue,seriesHRRN);
-        vulSeriesWait(mlfQue,seriesMLF);
+        Scheduler mlf2 = new MultiLevelFeedback2();
+        PriorityQueue<Process> mlfQueue2 = mlf2.schedule(processen);
 
-        /////////////////////////////////////////////////////////////////////////////
+        reeksWait(fcfsQueue, reeksFCFS);
+        reeksWait(sjfQueue, reeksSJF);
+        reeksWait(srtQueue, reeksSRT);
+        reeksWait(rr2Queue, reeksRR);
+        reeksWait(rr4Queue, reeksRR1);
+        reeksWait(rr8Queue, reeksRR2);
+        reeksWait(hrrnQueue, reeksHRRN);
+        reeksWait(mlfQueue, reeksMLF);
+        reeksWait(mlfQueue2, reeksMLF2);
 
-        lineChart.getData().add(seriesFCFS);
-        lineChart.getData().add(seriesSJF);
-        lineChart.getData().add(seriesSRT);
-        lineChart.getData().add(seriesRR);
-        lineChart.getData().add(seriesRR2);
-        lineChart.getData().add(seriesHRRN);
-        lineChart.getData().add(seriesMLF);
-        Scene scene  = new Scene(lineChart,800,600);
+        //########################################################################
 
+        //Toevoegen aan Chart met de reeks
+        lineChart.getData().add(reeksFCFS);
+        lineChart.getData().add(reeksSJF);
+        lineChart.getData().add(reeksSRT);
+        lineChart.getData().add(reeksRR);
+        lineChart.getData().add(reeksRR1);
+        lineChart.getData().add(reeksRR2);
+        lineChart.getData().add(reeksHRRN);
+        lineChart.getData().add(reeksMLF);
+        lineChart.getData().add(reeksMLF2);
+
+        //Resolutie scherm
+        Scene scene  = new Scene(lineChart,1280,720);
         stage.setScene(scene);
     }
 
-    public void saveAsPng(Scene scene, String path) {
-        WritableImage image = scene.snapshot(null);
-        File file = new File(path);
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void vulSeriesNorm (PriorityQueue<Process> que, XYChart.Series ser){
+    public void reeksNorm (PriorityQueue<Process> que, XYChart.Series rk){
 
         Process p;
         int aantal = 0;
         int percentielSize = que.size() / 100;
 
         double normtat = 0;
-        double excute = 0;
+        double execute = 0;
 
         while(!que.isEmpty()){
-            p=que.poll();
-            normtat+=p.getNormtat();
-            excute+=p.getServicetimeneeded();
+            p= que.poll();
+            normtat+= p.getNormtat();
+            execute+= p.getServicetimeneeded();
 
             if (aantal % percentielSize == 0 && aantal != 0) {
-                normtat=normtat/percentielSize;
-                excute=excute/percentielSize;
-                ser.getData().add(new XYChart.Data(excute, normtat));
+                normtat= normtat/percentielSize;
+                execute= execute/percentielSize;
+                rk.getData().add(new XYChart.Data(execute, normtat));
 
                 normtat = 0;
-                excute = 0;
+                execute = 0;
             }
             aantal++;
         }
     }
 
-    public void vulSeriesWait (PriorityQueue<Process> que, XYChart.Series ser){
+    public void reeksWait (PriorityQueue<Process> que, XYChart.Series rk){
 
         Process p;
         int aantal = 0;
         int percentielSize = que.size() / 100;
 
         double waittime=0;
-        double excute =0;
+        double execute =0;
 
         while(!que.isEmpty()){
 
-            p=que.poll();
-            waittime+=p.getWaittime();
-            excute+=p.getServicetimeneeded();
+            p= que.poll();
+            waittime+= p.getWaittime();
+            execute+= p.getServicetimeneeded();
 
             if (aantal % percentielSize == 0 && aantal != 0) {
 
-                waittime=waittime/percentielSize;
-                excute=excute/percentielSize;
+                waittime= waittime/percentielSize;
+                execute= execute/percentielSize;
 
-                ser.getData().add(new XYChart.Data(excute, waittime));
-                waittime = 0;
-                excute =0;
+                rk.getData().add(new XYChart.Data(execute, waittime));
+                waittime= 0;
+                execute= 0;
             }
             aantal++;
         }

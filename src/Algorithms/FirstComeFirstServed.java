@@ -55,7 +55,7 @@ public class FirstComeFirstServed extends Scheduler {
                 //Definieren Counter, starttijd, stoptijd
                 tmp.setStarttime(count);
                 count += tmp.getServicetime();
-                tmp.setEndtime(count);a
+                tmp.setEndtime(count);
 
                 //Parameters berekenen (Lokaal)
                 tmp.calculate();
@@ -64,7 +64,6 @@ public class FirstComeFirstServed extends Scheduler {
             }
 
             //Parameters aanpassen (Globaal)
-
             tat += tmp.getTat();
             normtat += tmp.getNormtat();
             waittime += tmp.getWaittime();

@@ -47,6 +47,7 @@ public class ProcessInput {
                 p.setId(Integer.parseInt(element.getElementsByTagName("pid").item(0).getTextContent()));
                 p.setArrivaltime(Integer.parseInt(element.getElementsByTagName("arrivaltime").item(0).getTextContent()));
                 p.setServicetime(Integer.parseInt(element.getElementsByTagName("servicetime").item(0).getTextContent()));
+
                 p.setServicetimeneeded(p.getServicetime());
                 p.setStarttime(-1);
 

@@ -27,11 +27,11 @@ public class Main extends Application{
 
         switch(optie){
             case(1):
-                grafiek.TrTs(stage,"10000");break;
+                grafiek.norm(stage,"10000");break;
             case(2):
-                grafiek.TrTs(stage,"20000");break;
+                grafiek.norm(stage,"20000");break;
             case(3):
-                grafiek.TrTs(stage,"50000");break;
+                grafiek.norm(stage,"50000");break;
             case(4):
                 grafiek.wait(stage,"10000");break;
             case(5):
