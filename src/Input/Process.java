@@ -2,8 +2,6 @@ package Input;
 
 public class Process extends ProcessInput implements Cloneable, Comparable {
 
-    //TODO
-
     private int id;
     private int arrivaltime;
     private int servicetime;
@@ -16,18 +14,11 @@ public class Process extends ProcessInput implements Cloneable, Comparable {
     private double responseRatio;
     private int priority; //this is for multi level feedabck
 
-    /**
-     * DefaultConstructor.
-     */
+    // Defaultconstructor
     public Process() {
     }
 
-    /**
-     * Constructor with parameters.
-     * @param id The process id.
-     * @param arrivaltime The arrival time.
-     * @param servicetimeNeeded The service time the process needs.
-     */
+    // Constructor met parameters
     public Process(int id, int arrivaltime, int servicetimeNeeded) {
         this.id = id;
         this.arrivaltime = arrivaltime;
@@ -38,10 +29,7 @@ public class Process extends ProcessInput implements Cloneable, Comparable {
 
     }
 
-    /**
-     * Copy constructor.
-     * @param p The input process to copy.
-     */
+    // Copyconstructor
     public Process(Process p) {
         this.arrivaltime = p.arrivaltime;
         this.servicetime = p.servicetime;
@@ -50,19 +38,14 @@ public class Process extends ProcessInput implements Cloneable, Comparable {
         this.responseRatio=p.responseRatio;
     }
 
-    /**
-     * Method for calculating the processor parameters after it's finished.
-     */
+    // Methode die de TAT, normTAT en Wait time berekent
     public void calculate() {
         this.tat = endtime - arrivaltime;
         this.normtat = (double) this.tat / servicetimeneeded;
         this.waittime = endtime - arrivaltime - servicetimeneeded;
     }
 
-    /**
-     * overWrite to string method.
-     * @return String containing the parameters of the process.
-     */
+    // Overwrite to string methode
     @Override
     public String toString() {
         return "Input.Process{" +
@@ -78,214 +61,113 @@ public class Process extends ProcessInput implements Cloneable, Comparable {
                 '}';
     }
 
-    /**
-     * Compare method
-     * @param o The process to compare to.
-     * @return Integer value based on comparison.
-     */
+    // Vergelijkmethode
     @Override
     public int compareTo(Object o) {
         Process p = (Process) o;
         return this.servicetimeneeded < p.servicetimeneeded ? -1 : 1;
     }
 
-    /**
-     * Decrease the service time of the process.
-     */
+    // Methode om Service time te verlagen
     public void decreaseServicetime(){servicetime--;}
 
-    /**
-     * Increase the wait time of the process.
-     */
+    // Methode om Wait time te verhogen
     public void increaseWaittime(){waittime++;}
 
-    /**
-     * Decrease The service time of the process with a given amount.
-     * @param i The decrementing value.
-     */
+    // Methode om Service time te verlagen met i eenheden
     public void decreaseServicetime(int i) {
         this.servicetime -= i;
     }
 
-    /**
-     * Increase the priority value.
-     */
+    // Methode om Priority value verhogen
     public void increasePriority(){
         priority++;
     }
 
-    /**
-     * Getter for the id attribute.
-     * @return The value of id.
-     */
+    // Getter- en settermethode voor ID
     public int getId() {
         return id;
     }
-
-    /**
-     * Setter for the id attribute.
-     * @param id New value of the id attribute.
-     */
     public void setId(int id) {
         this.id = id;
     }
 
-    /**
-     * Getter for the arrivaltime attribute.
-     * @return The value of arrivaltime.
-     */
+    // Getter- en settermethode voor Arrival Time
     public int getArrivaltime() {
         return arrivaltime;
     }
-
-    /**
-     * Setter for the ArrivalTime attribute.
-     * @param arrivaltime New value of the ArrivalTime attribute.
-     */
     public void setArrivaltime(int arrivaltime) {
         this.arrivaltime = arrivaltime;
     }
 
-    /**
-     * Getter for the service time attribute.
-     * @return The value of service time.
-     */
+    // Getter- en settermethode voor Service Time
     public int getServicetime() {
         return servicetime;
     }
-
-    /**
-     * Setter for the ServiceTime attribute.
-     * @param servicetime New value of the ServiceTime attribute.
-     */
     public void setServicetime(int servicetime) {
         this.servicetime = servicetime;
     }
 
-    /**
-     * Getter for the start time attribute.
-     * @return The value of start time.
-     */
+    // Getter- en settermethode voor Start Time
     public int getStarttime() {
         return starttime;
     }
-
-    /**
-     * Setter for the StartTime attribute.
-     * @param starttime New value of the StartTime attribute.
-     */
     public void setStarttime(int starttime) {
         this.starttime = starttime;
     }
 
-    /**
-     * Getter for the end time attribute.
-     * @return The value of end time.
-     */
+    // Getter- en settermethode voor End Time
     public int getEndtime() {
         return endtime;
     }
-
-    /**
-     * Setter for the EndTime attribute.
-     * @param endtime New value of the EndTime attribute.
-     */
     public void setEndtime(int endtime) {
         this.endtime = endtime;
     }
 
-    /**
-     * Getter for the TAT attribute.
-     * @return The value of TAT.
-     */
+    // Getter- en settermethode voor TAT attribuut
     public int getTat() {
         return tat;
     }
-
-    /**
-     * Setter for the TAT attribute.
-     * @param tat New value of the TAT attribute.
-     */
     public void setTat(int tat) {
         this.tat = tat;
     }
 
-    /**
-     * Getter for the NormTAT attribute.
-     * @return The value of normTat.
-     */
+    // Getter- en settermethode voor normTAT attribuut
     public double getNormtat() {
         return normtat;
     }
-
-    /**
-     * Setter for the normTAT attribute.
-     * @param normtat New value of the normTAT attribute.
-     */
     public void setNormtat(double normtat) {
         this.normtat = normtat;
     }
 
-    /**
-     * Getter for the WaitTime attribute.
-     * @return The value of WaitTime.
-     */
+    // Getter- en settermethode voor WaitTime attribuut
     public int getWaittime() {
         return waittime;
     }
-
-    /**
-     * Setter for the WaitTime attribute.
-     * @param waittime New value of the WaitTime attribute.
-     */
     public void setWaittime(int waittime) {
         this.waittime = waittime;
     }
 
-    /**
-     * Getter for the serviceTmeNeeded attribute.
-     * @return The value of serviceTmeNeeded.
-     */
+    // Getter- en settermethode voor ServiceTimeNeeded attribuut
     public int getServicetimeneeded() {
         return servicetimeneeded;
     }
-
-    /**
-     * Setter for the serviceTimeNeeded attribute.
-     * @param servicetimeneeded New value of the serviceTimeNeeded attribute.
-     */
     public void setServicetimeneeded(int servicetimeneeded) {
         this.servicetimeneeded = servicetimeneeded;
     }
 
-    /**
-     * Getter for the ResponseRatio attribute.
-     * @return The value of ResponseRatio.
-     */
+    // Getter- en settermethode voor responseRatio attribuut
     public double getResponseRatio() {
         return responseRatio;
     }
-
-    /**
-     * Setter for the responseRatio attribute.
-     * @param responseRatio New value of the responseRatio attribute.
-     */
     public void setResponseRatio(double responseRatio) {
         this.responseRatio = responseRatio;
     }
 
-    /**
-     * Getter for the Priority attribute.
-     * @return The value of Priority.
-     */
+    // Getter- en settermethode voor priority attribuut
     public int getPriority() {
         return priority;
     }
-
-    /**
-     * Setter for the priority attribute.
-     * @param priority New value of the priority attribute.
-     */
     public void setPriority(int priority) {
         this.priority = priority;
     }
