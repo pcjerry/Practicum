@@ -169,8 +169,8 @@ public class Display {
         //X-Y-assen waarden
         xAxis.setAutoRanging(false);
         xAxis.setLowerBound(0);
-        xAxis.setUpperBound(200);
-        xAxis.setTickUnit(20);
+        xAxis.setUpperBound(240);
+        xAxis.setTickUnit(24);
 
         yAxis.setAutoRanging(false);
         yAxis.setLowerBound(0);
